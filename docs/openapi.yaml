@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: Bitflow LMS API
+  version: 0.1.0
+  description: >-
+    API contract scaffold for Bitflow LMS. Incrementally expanded as modules
+    are implemented. All responses use application/json unless specified.
+servers:
+  - url: http://localhost:8000/api
+    description: Local Dev
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    sanctumCookie:
+      type: apiKey
+      in: cookie
+      name: XSRF-TOKEN
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          nullable: true
+        error:
+          nullable: true
+    PaginationMeta:
+      type: object
+      properties:
+        page: { type: integer }
+        per_page: { type: integer }
+        total: { type: integer }
+        last_page: { type: integer }
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user (admin seeded or initial only)
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                email: { type: string }
+                password: { type: string }
+              required: [name, email, password]
+      responses:
+        '201': { description: Created }
+  /auth/login:
+    post:
+      summary: User login
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+              required: [email, password]
+      responses:
+        '200': { description: OK }
+  /auth/logout:
+    post:
+      summary: Logout current user
+      tags: [Auth]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: No Content }
+  /users/me:
+    get:
+      summary: Get current user profile
+      tags: [Users]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+
+  /subjects:
+    get:
+      summary: List subjects (filter by department/program)
+      tags: [Academics]
+      parameters:
+        - in: query
+          name: department_id
+          schema: { type: integer }
+        - in: query
+          name: program_id
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+
+  /content:
+    get:
+      summary: List content items
+      tags: [Content]
+      parameters:
+        - in: query
+          name: subject_offering_id
+          schema: { type: integer }
+        - in: query
+          name: type
+          schema: { type: string, enum: [note, video] }
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create content item (draft)
+      tags: [Content]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_offering_id: { type: integer }
+                title: { type: string }
+                type: { type: string, enum: [note, video] }
+                description: { type: string }
+              required: [subject_offering_id, title, type]
+      responses:
+        '201': { description: Created }
+
+  /content/{id}:
+    get:
+      summary: Get content item
+      tags: [Content]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+    patch:
+      summary: Update content item
+      tags: [Content]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200': { description: OK }
+
+  /assessments:
+    get:
+      summary: List assessments
+      tags: [Assessments]
+      parameters:
+        - in: query
+          name: subject_offering_id
+          schema: { type: integer }
+        - in: query
+          name: status
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Create assessment
+      tags: [Assessments]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_offering_id: { type: integer }
+                title: { type: string }
+                type: { type: string, enum: [mcq, short, long, mixed] }
+              required: [subject_offering_id, title, type]
+      responses:
+        '201': { description: Created }
+
+  /assessments/{id}:
+    get:
+      summary: Get assessment
+      tags: [Assessments]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+
+  /assessments/{id}/questions:
+    post:
+      summary: Add question to assessment
+      tags: [Assessments]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type: { type: string, enum: [mcq, short, long] }
+                text: { type: string }
+                marks: { type: number }
+              required: [type, text]
+      responses:
+        '201': { description: Created }
+
+  /submissions:
+    post:
+      summary: Create (start) a submission
+      tags: [Submissions]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assessment_id: { type: integer }
+              required: [assessment_id]
+      responses:
+        '201': { description: Created }
+
+  /submissions/{id}:
+    patch:
+      summary: Submit or update answers
+      tags: [Submissions]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      question_id: { type: integer }
+                      response_text: { type: string }
+      responses:
+        '200': { description: OK }
+
+  /announcements:
+    get:
+      summary: List announcements
+      tags: [Announcements]
+      parameters:
+        - in: query
+          name: scope_type
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+
+security: []

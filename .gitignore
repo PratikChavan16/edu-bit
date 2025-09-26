@@ -1,0 +1,74 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Database
+lms-backend/database/database.sqlite
+lms-backend/database/*.sqlite
+
+# Storage
+lms-backend/storage/app/*
+!lms-backend/storage/app/.gitkeep
+lms-backend/storage/framework/cache/*
+!lms-backend/storage/framework/cache/.gitkeep
+lms-backend/storage/framework/sessions/*
+!lms-backend/storage/framework/sessions/.gitkeep
+lms-backend/storage/framework/views/*
+!lms-backend/storage/framework/views/.gitkeep
+lms-backend/storage/logs/*
+!lms-backend/storage/logs/.gitkeep
+
+# Build files
+frontend/build/
+frontend/dist/
+lms-backend/public/build/
+lms-backend/public/hot
+lms-backend/public/storage
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# PHP
+lms-backend/bootstrap/cache/*.php
+!lms-backend/bootstrap/cache/.gitkeep
+
+# Composer
+lms-backend/composer.lock
+
+# Laravel specific
+lms-backend/storage/debugbar/
+
+# Temporary files
+*.tmp
+*.temp
+
+# PDF files (if they're user-generated)
+*.pdf

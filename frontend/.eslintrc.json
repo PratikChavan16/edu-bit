@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "react-app",
+    "react-app/jest"
+  ],
+  "rules": {
+    "no-restricted-globals": ["error", {
+      "name": "confirm",
+      "message": "Use window.confirm instead"
+    }],
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}

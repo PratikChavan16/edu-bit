@@ -1,0 +1,39 @@
+.admin-dashboard .dash-header, .hod-dashboard .dash-header, .principal-dashboard .dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #0d4d6c;
+  color: #fff;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.dash-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.dash-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  padding: 1rem 1rem 1.25rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.dash-card h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+.dash-card p { margin: 0; font-size: 0.85rem; line-height: 1.3; color: #334155; }
+
+.user-meta button {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+.user-meta button:hover { background:#e2e8f0; }
+
+body { background:#f8fafc; }
